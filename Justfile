@@ -1,0 +1,49 @@
+set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
+
+python_dir := "venv/" + if os_family() == "windows" { "Scripts" } else { "bin" }
+python := python_dir + if os_family() == "windows" { "/python.exe" } else { "/python3" }
+
+server := "CHANGEME"
+appname := "kinderchef"
+
+export PIKU_SERVER := 'piku@{{server}}'
+
+system-info:
+    @echo "This is an {{arch()}} machine,"
+    @echo "With {{num_cpus()}} CPUs,"
+    @echo "Running on {{os()}} ({{os_family()}})."
+
+add-remote:
+    git remote add piku piku@{{server}}:{{appname}}
+
+deploy:
+    git push -f piku main
+
+restart:
+    ssh.exe piku@{{server}} restart {{appname}}
+
+createdb:
+    ssh.exe piku@{{server}} postgres:create {{appname}}
+
+createsuperuser:
+    ssh.exe -t piku@{{server}} run {{appname}} -- ./manage.py createsuperuser --username CHANGEME --email admin@example.com --no-input
+    ssh.exe -t piku@{{server}} run {{appname}} -- ./manage.py changepassword CHANGEME
+
+logs:
+    ssh.exe piku@{{server}} logs {{appname}}
+
+nginx-logs:
+    ssh.exe -t root@{{server}} -- 'multitail /var/log/nginx/access.log /var/log/nginx/error.log'
+
+format:
+    {{python}} -m black .
+
+dev:
+    {{python}} manage.py runserver
+
+install:
+    {{python}} -m pip install -U pip
+    {{python}} -m pip install -r requirements.txt
+
+repo:
+    Start-Process "https://github.com/seguri/{{appname}}"
