@@ -47,6 +47,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    "mealplanner",
     "whitenoise.runserver_nostatic",
     "django.contrib.admin",
     "django.contrib.auth",
