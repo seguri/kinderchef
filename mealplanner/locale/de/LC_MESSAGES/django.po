@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: .\mealplanner\admin.py:7
+msgid "Meal Planner"
+msgstr "Speiseplaner"
+
+#: .\mealplanner\models.py:41
+msgid "first name"
+msgstr "Vorname"
+
+#: .\mealplanner\models.py:42
+msgid "last name"
+msgstr "Nachname"
+
+#: .\mealplanner\models.py:44
+msgid "full name"
+msgstr "voller Name"
+
+#: .\mealplanner\models.py:54
+msgid "Child"
+msgstr "Kind"
+
+#: .\mealplanner\models.py:55
+msgid "Children"
+msgstr "Kinder"

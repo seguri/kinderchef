@@ -45,5 +45,15 @@ install:
     {{python}} -m pip install -U pip
     {{python}} -m pip install -r requirements.txt
 
+migrate:
+    {{python}} manage.py makemigrations
+    {{python}} manage.py migrate
+
+makemessages:
+    {{python}} manage.py makemessages -l de
+
+compilemessages:
+    {{python}} manage.py compilemessages
+
 repo:
     Start-Process "https://github.com/seguri/{{appname}}"
