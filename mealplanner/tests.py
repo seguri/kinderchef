@@ -1,3 +1,6 @@
-from django.test import TestCase
+def inc(x):
+    return x + 1
 
-# Create your tests here.
+
+def test_inc():
+    assert inc(3) == 4

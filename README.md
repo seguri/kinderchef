@@ -90,3 +90,7 @@ WeeklyMeal {
 - Configure the deployment remote with `just add-remote`
 - Deploy with `just deploy`
 - Create a django superuser with `just createsuperuser`
+
+## TODO
+
+- [ ] Migrate requirements.txt to pyproject.toml
