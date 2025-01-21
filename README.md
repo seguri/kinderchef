@@ -13,20 +13,15 @@ WeeklySchedule ||--o{ WeeklyMeal : "contains"
 Meal ||--o{ WeeklyMeal : "planned in"
 
 Child {
-    int id PK
+    UUID id PK
     string first_name
     string last_name
-    date date_of_birth
-    string emergency_contact
-    text notes
 }
 
 Attendance {
-    int id PK
+    UUID id PK
     int child_id FK
-    date date
-    bool morning_session
-    bool afternoon_session
+    text rrule
 }
 
 DietaryRestriction {

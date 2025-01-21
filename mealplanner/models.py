@@ -1,9 +1,17 @@
-from django.conf import settings
-from django.db import models
-from django.utils.translation import gettext_lazy as _
+from datetime import date, datetime
 from uuid import uuid4
 
-from mealplanner.decorators import short_description
+from django.conf import settings
+from django.contrib.admin import display
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from dateutil.rrule import rrulestr
+from zoneinfo import ZoneInfo
+
+
+def to_datetime(d: date) -> datetime:
+    tz = ZoneInfo(settings.TIME_ZONE)
+    return datetime(d.year, d.month, d.day, 12, 0, 0, tzinfo=tz)
 
 
 class BaseModel(models.Model):
@@ -41,7 +49,7 @@ class Child(BaseModel):
     first_name = models.CharField(_("first name"), max_length=100)
     last_name = models.CharField(_("last name"), max_length=100)
 
-    @short_description(_("full name"))
+    @display(description=_("full name"))
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
@@ -53,3 +61,16 @@ class Child(BaseModel):
         unique_together = ["first_name", "last_name"]
         verbose_name = _("Child")
         verbose_name_plural = _("Children")
+
+
+class Attendance(BaseModel):
+    child = models.ForeignKey("Child", on_delete=models.CASCADE)
+    rrule = models.TextField()
+
+    def next_occurrence(self):
+        try:
+            r = rrulestr(self.rrule, cache=True)
+            next_occurrence = r.after(to_datetime(date.today()))
+            return next_occurrence.date()
+        except ValueError:
+            return None

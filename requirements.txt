@@ -3,3 +3,4 @@ black==24.10.0
 whitenoise[brotli]==6.6.0
 django-axes[ipware]==7.0.1
 pytest-django==4.9.0
+python-dateutil==2.9.0.post0
