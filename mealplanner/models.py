@@ -45,6 +45,20 @@ class BaseModel(models.Model):
         return f"{self.__class__.__name__} {self.id}"
 
 
+class DietaryRestriction(BaseModel):
+    name = models.CharField(max_length=100)
+    is_group = models.BooleanField(default=False)
+    included_restrictions = models.ManyToManyField(
+        "self", blank=True, symmetrical=False
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["name"]
+
+
 class Child(BaseModel):
     first_name = models.CharField(_("first name"), max_length=100)
     last_name = models.CharField(_("last name"), max_length=100)

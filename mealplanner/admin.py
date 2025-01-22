@@ -1,7 +1,9 @@
 from django.contrib import admin
+from django.forms import ModelForm
+from django.forms.widgets import MultipleHiddenInput
 from django.utils.translation import gettext_lazy as _
 
-from mealplanner.models import Child, Attendance
+from mealplanner.models import Child, Attendance, DietaryRestriction
 
 admin.site.site_header = "KinderChef"
 admin.site.site_title = "KinderChef"
@@ -32,6 +34,34 @@ class BaseAdmin(admin.ModelAdmin):
             instance.save()
 
         formset.save_m2m()
+
+
+class DietaryRestrictionForm(ModelForm):
+    class Meta:
+        model = DietaryRestriction
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.is_group:
+            self.fields["included_restrictions"].queryset = (
+                DietaryRestriction.objects.filter(is_group=False)
+            )
+        else:
+            self.fields["included_restrictions"].widget = MultipleHiddenInput()
+            self.initial["included_restrictions"] = []
+
+
+@admin.register(DietaryRestriction)
+class DietaryRestrictionAdmin(BaseAdmin):
+    list_display = ("name", "is_group")
+    filter_horizontal = ("included_restrictions",)
+    form = DietaryRestrictionForm
+
+    def save_model(self, request, obj, form, change):
+        if not obj.is_group:
+            obj.included_restrictions.clear()
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Child)

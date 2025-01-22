@@ -5,6 +5,7 @@ python := python_dir + if os_family() == "windows" { "/python.exe" } else { "/py
 
 server := "CHANGEME"
 appname := "kinderchef"
+appdir := "/home/piku/.piku/apps/" + appname
 
 export PIKU_SERVER := 'piku@{{server}}'
 
@@ -60,3 +61,9 @@ compilemessages:
 
 repo:
     Start-Process "https://github.com/seguri/{{appname}}"
+
+dumpdata:
+    ssh.exe piku@{{server}} run {{appname}} -- './manage.py dumpdata --natural-foreign --natural-primary --format=json --indent=2'
+
+fixperms:
+    ssh.exe root@{{server}} -- 'chmod 744 {{appdir}}/manage.py; chown -R piku:www-data {{appdir}}/db.sqlite3'

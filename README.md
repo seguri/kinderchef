@@ -5,13 +5,9 @@
 ```mermaid
 erDiagram
 Child ||--o{ Attendance : "attends on"
-Child ||--o{ ChildDietaryRestriction : "has"
-DietaryRestriction ||--o{ ChildDietaryRestriction : "assigned to"
-DietaryRestriction ||--o{ MealRestriction : "restricts"
-Meal ||--o{ MealRestriction : "has"
-WeeklySchedule ||--o{ WeeklyMeal : "contains"
-Meal ||--o{ WeeklyMeal : "planned in"
-
+Child ||--o{ DietaryRestriction : "has"
+DietaryRestriction ||--o{ Meal : "restricts"
+DietaryRestriction ||--o{ DietaryRestriction : "contains"
 Child {
     UUID id PK
     string first_name
@@ -27,35 +23,21 @@ Attendance {
 DietaryRestriction {
     int id PK
     string name
-    text description
-    string severity
-}
-
-ChildDietaryRestriction {
-    int id PK
-    int child_id FK
-    int restriction_id FK
-    date start_date
-    date end_date
-    text notes
+    is_group bool
+    included_restrictions DietaryRestriction[]
 }
 
 Meal {
     int id PK
     string name
-    text description
-    string category
-    bool is_vegetarian
-    bool is_vegan
-    text ingredients
-    text preparation_notes
+    link URL
+    text notes
+    restrictions DietaryRestriction[]
 }
 
-MealRestriction {
-    int id PK
-    int meal_id FK
-    int restriction_id FK
-}
+WeeklySchedule ||--o{ WeeklyMeal : "contains"
+Meal ||--o{ WeeklyMeal : "planned in"
+
 
 WeeklySchedule {
     int id PK
