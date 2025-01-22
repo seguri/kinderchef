@@ -62,6 +62,18 @@ class DietaryRestriction(BaseModel):
 class Child(BaseModel):
     first_name = models.CharField(_("first name"), max_length=100)
     last_name = models.CharField(_("last name"), max_length=100)
+    dietary_restrictions = models.ManyToManyField(
+        DietaryRestriction, blank=True, related_name="children"
+    )
+
+    def get_all_dietary_restrictions(self):
+        restrictions = set()
+        for restriction in self.dietary_restrictions.all():
+            if restriction.is_group:
+                restrictions.update(restriction.included_restrictions.all())
+            else:
+                restrictions.add(restriction)
+        return restrictions
 
     @display(description=_("full name"))
     def full_name(self):

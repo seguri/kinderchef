@@ -66,10 +66,14 @@ class DietaryRestrictionAdmin(BaseAdmin):
 
 @admin.register(Child)
 class ChildAdmin(BaseAdmin):
-    list_display = ("full_name",)
+    list_display = ("full_name", "restrictions")
     list_display_links = ("full_name",)
     search_fields = ("first_name", "last_name")
+    filter_horizontal = ("dietary_restrictions",)
     ordering = ("first_name",)
+
+    def restrictions(self, obj):
+        return len(obj.get_all_dietary_restrictions())
 
 
 @admin.register(Attendance)
