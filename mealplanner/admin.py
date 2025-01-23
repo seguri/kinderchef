@@ -59,11 +59,27 @@ class DietaryRestrictionAdmin(BaseAdmin):
     search_fields = ("name",)
     filter_horizontal = ("included_restrictions",)
     form = DietaryRestrictionForm
+    readonly_fields = ["readonly_restricted_meals"]
 
     def save_model(self, request, obj, form, change):
         if not obj.is_group:
             obj.included_restrictions.clear()
         super().save_model(request, obj, form, change)
+
+    @admin.display(description=_("Restricted meals"))
+    def readonly_restricted_meals(self, obj: DietaryRestriction):
+        if not obj.pk:
+            return "-"
+
+        restricted_meals = obj.meals.all()
+        if not restricted_meals:
+            return _("No meals are restricted from this restriction")
+
+        def args_generator():
+            for meal in restricted_meals:
+                yield meal.admin_change_url(), meal.name
+
+        return format_html_join("\n", "<li><a href='{}'>{}</a></li>", args_generator())
 
 
 @admin.register(Child)
@@ -90,10 +106,10 @@ class MealAdmin(BaseAdmin):
     list_display_links = ("name",)
     search_fields = ("name",)
     filter_horizontal = ("dietary_restrictions",)
-    readonly_fields = ["restricted_children_display"]
+    readonly_fields = ["readonly_restricted_children"]
 
     @admin.display(description=_("Children with Restrictions"))
-    def restricted_children_display(self, obj):
+    def readonly_restricted_children(self, obj: Meal):
         if not obj.pk:
             return "-"
 
