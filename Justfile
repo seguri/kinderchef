@@ -54,7 +54,7 @@ migrate:
     {{python}} manage.py migrate
 
 makemessages:
-    {{python}} manage.py makemessages -l de
+    {{python}} manage.py makemessages -l de -l it
 
 compilemessages:
     {{python}} manage.py compilemessages

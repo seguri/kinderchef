@@ -63,6 +63,8 @@ class DietaryRestriction(BaseModel):
 
     class Meta:
         ordering = ["name"]
+        verbose_name = _("Dietary restriction")
+        verbose_name_plural = _("Dietary restrictions")
 
 
 class Child(BaseModel):
@@ -110,6 +112,10 @@ class Attendance(BaseModel):
     def __str__(self):
         return f"{self.child}, {self.next_occurrence()}"
 
+    class Meta:
+        verbose_name = _("Attendance")
+        verbose_name_plural = _("Attendances")
+
 
 class Meal(BaseModel):
     name = models.CharField(_("name"), max_length=100)
@@ -136,3 +142,7 @@ class Meal(BaseModel):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _("Meal")
+        verbose_name_plural = _("Meals")

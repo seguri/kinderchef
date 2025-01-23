@@ -62,7 +62,7 @@ WeeklyMeal {
 - Create ENV
 - Update settings.py
 - Open port 80 in the firewall to allow the Let's Encrypt challenge
-- Make sure you can compile psycopg2 by running `apt install build-essential python3-dev libpq-dev`
+- Make sure you can compile psycopg2 and translations by running `apt install build-essential python3-dev libpq-dev gettext`
 - Create a database with `just createdb`
 - Configure the deployment remote with `just add-remote`
 - Deploy with `just deploy`
