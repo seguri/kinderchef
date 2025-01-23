@@ -57,6 +57,7 @@ ENABLE_DEBUG_TOOLBAR = DEBUG and not TESTING
 
 INSTALLED_APPS = [
     "mealplanner",
+    "modeltranslation",
     "whitenoise.runserver_nostatic",
     "django.contrib.admin",
     "django.contrib.auth",
