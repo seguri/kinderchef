@@ -1,12 +1,14 @@
 from datetime import date, datetime
 from uuid import uuid4
+from zoneinfo import ZoneInfo
 
 from django.conf import settings
 from django.contrib.admin import display
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
+
 from dateutil.rrule import rrulestr
-from zoneinfo import ZoneInfo
 
 
 def to_datetime(d: date) -> datetime:
@@ -36,13 +38,17 @@ class BaseModel(models.Model):
         on_delete=models.PROTECT,
     )
 
+    def admin_change_url(self):
+        viewname = f"admin:{self._meta.app_label}_{self._meta.model_name}_change"
+        return reverse(viewname, args=(self.pk,))
+
+    def __str__(self):
+        return f"{self.__class__.__name__} {self.id}"
+
     class Meta:
         abstract = True
         ordering = ["-created_at"]
         get_latest_by = "created_at"
-
-    def __str__(self):
-        return f"{self.__class__.__name__} {self.id}"
 
 
 class DietaryRestriction(BaseModel):
@@ -100,3 +106,33 @@ class Attendance(BaseModel):
             return next_occurrence.date()
         except ValueError:
             return None
+
+    def __str__(self):
+        return f"{self.child}, {self.next_occurrence()}"
+
+
+class Meal(BaseModel):
+    name = models.CharField(_("name"), max_length=100)
+    link = models.URLField(_("link"), blank=True)
+    notes = models.TextField(_("notes"), blank=True)
+    dietary_restrictions = models.ManyToManyField(
+        DietaryRestriction, blank=True, related_name="meals"
+    )
+
+    def get_restricted_children(self):
+        direct_restrictions = Child.objects.filter(
+            dietary_restrictions__in=self.dietary_restrictions.filter(is_group=False)
+        ).distinct()
+
+        group_restrictions = Child.objects.filter(
+            dietary_restrictions__in=DietaryRestriction.objects.filter(
+                is_group=True, included_restrictions__in=self.dietary_restrictions.all()
+            )
+        ).distinct()
+
+        return (direct_restrictions | group_restrictions).order_by(
+            "first_name", "last_name"
+        )
+
+    def __str__(self):
+        return self.name

@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.forms import ModelForm
 from django.forms.widgets import MultipleHiddenInput
+from django.utils.html import format_html_join
 from django.utils.translation import gettext_lazy as _
 
-from mealplanner.models import Child, Attendance, DietaryRestriction
+from mealplanner.models import Child, Attendance, DietaryRestriction, Meal
 
 admin.site.site_header = "KinderChef"
 admin.site.site_title = "KinderChef"
@@ -55,6 +56,7 @@ class DietaryRestrictionForm(ModelForm):
 @admin.register(DietaryRestriction)
 class DietaryRestrictionAdmin(BaseAdmin):
     list_display = ("name", "is_group")
+    search_fields = ("name",)
     filter_horizontal = ("included_restrictions",)
     form = DietaryRestrictionForm
 
@@ -80,3 +82,27 @@ class ChildAdmin(BaseAdmin):
 class AttendanceAdmin(BaseAdmin):
     list_display = ("child", "next_occurrence")
     list_display_links = ("child",)
+
+
+@admin.register(Meal)
+class MealAdmin(BaseAdmin):
+    list_display = ("name", "link")
+    list_display_links = ("name",)
+    search_fields = ("name",)
+    filter_horizontal = ("dietary_restrictions",)
+    readonly_fields = ["restricted_children_display"]
+
+    @admin.display(description=_("Children with Restrictions"))
+    def restricted_children_display(self, obj):
+        if not obj.pk:
+            return "-"
+
+        restricted_children = obj.get_restricted_children()
+        if not restricted_children:
+            return _("No children are restricted from this meal")
+
+        def args_generator():
+            for child in restricted_children:
+                yield child.admin_change_url(), child.full_name()
+
+        return format_html_join("\n", "<li><a href='{}'>{}</a></li>", args_generator())
