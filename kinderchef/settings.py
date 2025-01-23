@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 from django.utils.translation import gettext_lazy as _
@@ -26,6 +27,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", default="CHANGEME")
 
 IS_PIKU_APP = "PIKU" in os.environ and not "CI" in os.environ
+TESTING = "pytest" in sys.modules
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "::1",
+]
 
 if IS_PIKU_APP:
     DEBUG = False
@@ -42,6 +49,8 @@ else:
     SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
+
+ENABLE_DEBUG_TOOLBAR = DEBUG and not TESTING
 
 
 # Application definition
@@ -170,3 +179,11 @@ WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+if ENABLE_DEBUG_TOOLBAR:
+    INSTALLED_APPS += [
+        "debug_toolbar",
+    ]
+    MIDDLEWARE += [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ]
