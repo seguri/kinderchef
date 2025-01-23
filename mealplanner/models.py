@@ -126,13 +126,15 @@ class Meal(BaseModel):
     )
 
     def get_restricted_children(self):
+        restrictions = self.dietary_restrictions.all()
+
         direct_restrictions = Child.objects.filter(
-            dietary_restrictions__in=self.dietary_restrictions.filter(is_group=False)
+            dietary_restrictions__in=restrictions
         ).distinct()
 
         group_restrictions = Child.objects.filter(
             dietary_restrictions__in=DietaryRestriction.objects.filter(
-                is_group=True, included_restrictions__in=self.dietary_restrictions.all()
+                is_group=True, included_restrictions__in=restrictions
             )
         ).distinct()
 

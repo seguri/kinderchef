@@ -1,0 +1,54 @@
+[
+	{
+		"model": "mealplanner.child",
+		"pk": "37f54f76-2583-47e8-845c-ed71342ee577",
+		"fields": {
+			"first_name": "Muhammad",
+			"last_name": "Ali",
+			"dietary_restrictions": ["566ba83e-791f-42de-954e-567ed46e37f1"],
+			"created_at": "2025-01-02T01:00:00.000Z",
+			"updated_at": "2025-01-02T01:00:00.000Z",
+			"created_by": ["test"],
+			"updated_by": ["test"]
+		}
+	},
+	{
+		"model": "mealplanner.child",
+		"pk": "83771d9a-6fa5-4908-9301-00b4ec65c1cc",
+		"fields": {
+			"first_name": "Clark",
+			"last_name": "Kent",
+			"dietary_restrictions": [],
+			"created_at": "2025-01-02T01:00:00.000Z",
+			"updated_at": "2025-01-02T01:00:00.000Z",
+			"created_by": ["test"],
+			"updated_by": ["test"]
+		}
+	},
+	{
+		"model": "mealplanner.child",
+		"pk": "bdf28c32-d445-417e-b6d7-6395d4741783",
+		"fields": {
+			"first_name": "Joaquin",
+			"last_name": "Phoenix",
+			"dietary_restrictions": ["e4ad5e1b-6e62-4340-9b96-5b8cfc9eb948"],
+			"created_at": "2025-01-02T01:00:00.000Z",
+			"updated_at": "2025-01-02T01:00:00.000Z",
+			"created_by": ["test"],
+			"updated_by": ["test"]
+		}
+	},
+	{
+		"model": "mealplanner.child",
+		"pk": "b60c3d05-469d-456e-b69b-1f153f2fe72b",
+		"fields": {
+			"first_name": "Carlotta",
+			"last_name": "S.",
+			"dietary_restrictions": ["cc73856a-a43c-4378-aa98-473658d4cfc0"],
+			"created_at": "2025-01-02T01:00:00.000Z",
+			"updated_at": "2025-01-02T01:00:00.000Z",
+			"created_by": ["test"],
+			"updated_by": ["test"]
+		}
+	}
+]

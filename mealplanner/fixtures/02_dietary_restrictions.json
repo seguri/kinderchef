@@ -1,0 +1,66 @@
+[
+	{
+		"model": "mealplanner.dietaryrestriction",
+		"pk": "5dee8e04-b841-4a41-8bf8-338499370093",
+		"fields": {
+			"name": "Pork",
+			"name_de": "Pork",
+			"name_en": "Pork",
+			"name_it": "Pork",
+			"is_group": false,
+			"included_restrictions": [],
+			"created_at": "2025-01-02T01:00:00.000Z",
+			"updated_at": "2025-01-02T01:00:00.000Z",
+			"created_by": ["test"],
+			"updated_by": ["test"]
+		}
+	},
+	{
+		"model": "mealplanner.dietaryrestriction",
+		"pk": "cc73856a-a43c-4378-aa98-473658d4cfc0",
+		"fields": {
+			"name": "Porcini mushrooms",
+			"name_de": "Porcini mushrooms",
+			"name_en": "Porcini mushrooms",
+			"name_it": "Porcini mushrooms",
+			"is_group": false,
+			"included_restrictions": [],
+			"created_at": "2025-01-02T01:00:00.000Z",
+			"updated_at": "2025-01-02T01:00:00.000Z",
+			"created_by": ["test"],
+			"updated_by": ["test"]
+		}
+	},
+	{
+		"model": "mealplanner.dietaryrestriction",
+		"pk": "e4ad5e1b-6e62-4340-9b96-5b8cfc9eb948",
+		"fields": {
+			"name": "21. Vegan",
+			"name_de": "21. Veganer",
+			"name_en": "21. Vegan",
+			"name_it": "21. Vegano",
+			"is_group": true,
+			"included_restrictions": ["5dee8e04-b841-4a41-8bf8-338499370093"],
+			"created_at": "2025-01-02T01:00:00.000Z",
+			"updated_at": "2025-01-02T01:00:00.000Z",
+			"created_by": ["test"],
+			"updated_by": ["test"]
+		}
+	},
+	{
+		"model": "mealplanner.dietaryrestriction",
+		"pk": "566ba83e-791f-42de-954e-567ed46e37f1",
+		"fields": {
+			"name": "22. Muslim",
+			"name_de": "22. Muslim",
+			"name_en": "22. Muslim",
+			"name_it": "22. Musulmano",
+			"is_group": true,
+			"included_restrictions": ["5dee8e04-b841-4a41-8bf8-338499370093"],
+			"created_at": "2025-01-02T01:00:00.000Z",
+			"updated_at": "2025-01-02T01:00:00.000Z",
+			"created_by": ["test"],
+			"updated_by": ["test"]
+		}
+	}
+]
