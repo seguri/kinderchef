@@ -8,6 +8,7 @@ def test_muhammad_ali_is_muslim():
     ali = Child.objects.get(first_name="Muhammad", last_name="Ali")
     being_muslim = DietaryRestriction.objects.get(name="22. Muslim")
     assert ali in being_muslim.children.all()
+    assert being_muslim in ali.get_all_dietary_restrictions()
 
 
 @pytest.mark.django_db
@@ -29,6 +30,7 @@ def test_joaquin_phoenix_is_vegan():
     joaquin = Child.objects.get(first_name="Joaquin", last_name="Phoenix")
     being_vegan = DietaryRestriction.objects.get(name="21. Vegan")
     assert joaquin in being_vegan.children.all()
+    assert being_vegan in joaquin.get_all_dietary_restrictions()
 
 
 @pytest.mark.django_db
@@ -50,6 +52,7 @@ def test_carlotta_is_allergic_to_porcini():
     carlotta = Child.objects.get(first_name="Carlotta", last_name="S.")
     porcini_allergy = DietaryRestriction.objects.get(name="Porcini mushrooms")
     assert carlotta in porcini_allergy.children.all()
+    assert porcini_allergy in carlotta.get_all_dietary_restrictions()
 
 
 @pytest.mark.django_db

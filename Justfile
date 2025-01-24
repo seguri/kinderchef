@@ -43,7 +43,7 @@ dev:
     {{python}} manage.py runserver
 
 test:
-    pytest -s
+    {{python}} -m pytest -s
 
 install:
     {{python}} -m pip install -U pip

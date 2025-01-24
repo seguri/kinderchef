@@ -40,7 +40,7 @@
 			"name_en": "21. Vegan",
 			"name_it": "21. Vegano",
 			"is_group": true,
-			"included_restrictions": ["5dee8e04-b841-4a41-8bf8-338499370093"],
+			"included_restrictions": [],
 			"created_at": "2025-01-02T01:00:00.000Z",
 			"updated_at": "2025-01-02T01:00:00.000Z",
 			"created_by": ["test"],
