@@ -5,6 +5,7 @@ from zoneinfo import ZoneInfo
 from django.conf import settings
 from django.contrib.admin import display
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 
@@ -126,20 +127,14 @@ class Meal(BaseModel):
     )
 
     def get_restricted_children(self):
-        restrictions = self.dietary_restrictions.all()
-
-        direct_restrictions = Child.objects.filter(
-            dietary_restrictions__in=restrictions
-        ).distinct()
-
-        group_restrictions = Child.objects.filter(
-            dietary_restrictions__in=DietaryRestriction.objects.filter(
-                is_group=True, included_restrictions__in=restrictions
+        meal_restrictions = self.dietary_restrictions.all()
+        return (
+            Child.objects.filter(
+                Q(dietary_restrictions__in=meal_restrictions)
+                | Q(dietary_restrictions__included_restrictions__in=meal_restrictions)
             )
-        ).distinct()
-
-        return (direct_restrictions | group_restrictions).order_by(
-            "first_name", "last_name"
+            .distinct()
+            .order_by("first_name", "last_name")
         )
 
     def __str__(self):
