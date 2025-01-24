@@ -1,2 +1,2 @@
-release: python manage.py migrate --no-input && python manage.py compilemessages && python manage.py collectstatic --no-input
+release: sh scripts/release.sh
 wsgi: kinderchef.wsgi:application
