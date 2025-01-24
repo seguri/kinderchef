@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 
 from django.conf import settings
 from django.contrib.admin import display
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
@@ -15,6 +16,11 @@ from dateutil.rrule import rrulestr
 def to_datetime(d: date) -> datetime:
     tz = ZoneInfo(settings.TIME_ZONE)
     return datetime(d.year, d.month, d.day, 12, 0, 0, tzinfo=tz)
+
+
+def validate_monday(value):
+    if value.isocalendar().weekday != 1:
+        raise ValidationError(_("%(value)s must be a Monday"), params={"value": value})
 
 
 class BaseModel(models.Model):
@@ -140,3 +146,67 @@ class Meal(BaseModel):
     class Meta:
         verbose_name = _("Meal")
         verbose_name_plural = _("Meals")
+
+
+class WeeklySchedule(BaseModel):
+    week_start = models.DateField(_("Start of the week"), validators=[validate_monday])
+    notes = models.TextField(_("notes"), blank=True)
+    monday_meal = models.ForeignKey(
+        Meal,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="monday_meal",
+        verbose_name=_("Monday meal"),
+    )
+    tuesday_meal = models.ForeignKey(
+        Meal,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="tuesday_meal",
+        verbose_name=_("Tuesday meal"),
+    )
+    wednesday_meal = models.ForeignKey(
+        Meal,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="wednesday_meal",
+        verbose_name=_("Wednesday meal"),
+    )
+    thursday_meal = models.ForeignKey(
+        Meal,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="thursday_meal",
+        verbose_name=_("Thursday meal"),
+    )
+    friday_meal = models.ForeignKey(
+        Meal,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="friday_meal",
+        verbose_name=_("Friday meal"),
+    )
+
+    @property
+    def week(self):
+        return self.week_start.isocalendar().week
+
+    @property
+    def year(self):
+        return self.week_start.isocalendar().year
+
+    def __str__(self):
+        return f"Week {self.week} of {self.year}, starting on {self.week_start}"
+
+    class Meta:
+        ordering = ["-week_start"]
+        verbose_name = _("Weekly schedule")
+        verbose_name_plural = _("Weekly schedules")
+        constraints = (
+            models.UniqueConstraint(fields=["week_start"], name="unique_week_start"),
+        )

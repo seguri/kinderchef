@@ -4,10 +4,13 @@
 
 ```mermaid
 erDiagram
+
 Child ||--o{ Attendance : "attends on"
-Child ||--o{ DietaryRestriction : "has"
-DietaryRestriction ||--o{ Meal : "restricts"
+Child }o--o{ DietaryRestriction : "has"
 DietaryRestriction ||--o{ DietaryRestriction : "contains"
+DietaryRestriction }o--o{ Meal : "restricts"
+WeeklySchedule }o--o{  Meal : "plans"
+
 Child {
     UUID id PK
     string first_name
@@ -35,22 +38,10 @@ Meal {
     restrictions DietaryRestriction[]
 }
 
-WeeklySchedule ||--o{ WeeklyMeal : "contains"
-Meal ||--o{ WeeklyMeal : "planned in"
-
-
 WeeklySchedule {
     int id PK
     date week_start_date
     text notes
-}
-
-WeeklyMeal {
-    int id PK
-    int schedule_id FK
-    int meal_id FK
-    date serve_date
-    string meal_time
 }
 ```
 

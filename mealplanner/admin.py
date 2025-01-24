@@ -1,10 +1,19 @@
+from datetime import date
+
+from dateutil.relativedelta import MO, relativedelta
 from django.contrib import admin
 from django.forms import ModelForm
 from django.forms.widgets import MultipleHiddenInput
 from django.utils.html import format_html_join
 from django.utils.translation import gettext_lazy as _
 
-from mealplanner.models import Child, Attendance, DietaryRestriction, Meal
+from mealplanner.models import (
+    Child,
+    Attendance,
+    DietaryRestriction,
+    Meal,
+    WeeklySchedule,
+)
 
 admin.site.site_header = "KinderChef"
 admin.site.site_title = "KinderChef"
@@ -59,7 +68,7 @@ class DietaryRestrictionAdmin(BaseAdmin):
     search_fields = ("name",)
     filter_horizontal = ("included_restrictions",)
     form = DietaryRestrictionForm
-    readonly_fields = ["readonly_restricted_meals"]
+    readonly_fields = ("readonly_restricted_meals",)
 
     def save_model(self, request, obj, form, change):
         if not obj.is_group:
@@ -106,7 +115,7 @@ class MealAdmin(BaseAdmin):
     list_display_links = ("name",)
     search_fields = ("name",)
     filter_horizontal = ("dietary_restrictions",)
-    readonly_fields = ["readonly_restricted_children"]
+    readonly_fields = ("readonly_restricted_children",)
 
     @admin.display(description=_("Children with Restrictions"))
     def readonly_restricted_children(self, obj: Meal):
@@ -122,3 +131,18 @@ class MealAdmin(BaseAdmin):
                 yield child.admin_change_url(), child.full_name()
 
         return format_html_join("\n", "<li><a href='{}'>{}</a></li>", args_generator())
+
+
+@admin.register(WeeklySchedule)
+class WeeklyScheduleAdmin(BaseAdmin):
+    list_display = ("week_start", "week", "year")
+    list_display_links = ("week_start",)
+    search_fields = ("week_start",)
+
+    def get_changeform_initial_data(self, request):
+        """Set the initial date to the next Monday."""
+        initial = super().get_changeform_initial_data(request)
+        today = date.today()
+        next_monday = today + relativedelta(weekday=MO(1))
+        initial["week_start"] = next_monday
+        return initial
