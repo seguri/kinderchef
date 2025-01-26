@@ -2,15 +2,14 @@ from datetime import date, datetime
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
+from dateutil.rrule import rrulestr
 from django.conf import settings
 from django.contrib.admin import display
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
-
-from dateutil.rrule import rrulestr
+from django.utils.translation import gettext_lazy as _
 
 
 def to_datetime(d: date) -> datetime:

@@ -1,6 +1,7 @@
 # https://pytest-django.readthedocs.io/en/latest/database.html#fixtures
 
 import os
+
 import pytest
 from django.conf import settings
 from django.core.management import call_command
