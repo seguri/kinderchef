@@ -1,6 +1,16 @@
-import pytest
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
-from mealplanner.models import Child, DietaryRestriction, Meal
+import pytest
+from dateutil.rrule import rrulestr
+
+from mealplanner.models import (
+    Child,
+    DietaryRestriction,
+    Meal,
+    to_aware_datetime,
+    to_naive_datetime,
+)
 
 
 @pytest.mark.django_db
@@ -67,3 +77,50 @@ def test_people_allergic_to_porcini_cannot_eat_risotto_ai_porcini():
     no_porcini = DietaryRestriction.objects.get(name="Porcini mushrooms")
     risotto = Meal.objects.get(name_it="Risotto ai porcini")
     assert risotto in no_porcini.meals.all()
+
+
+def test_next_occurrence_datetime_utc_should_be_January_29th():
+    rule = rrulestr(
+        """
+        DTSTART:20250119T120000Z
+        RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR
+        EXDATE:20250127T120000Z
+        """,
+    )
+    tz = ZoneInfo("UTC")
+    next_occurrence = rule.after(datetime(2025, 1, 26, 12, 0, 0, tzinfo=tz))
+    assert next_occurrence.date() == date(2025, 1, 29)
+    next_occurrence = rule.after(to_aware_datetime(date(2025, 1, 26)))
+    assert next_occurrence.date() == date(2025, 1, 29)
+
+
+def test_next_occurrence_datetime_zh_should_be_January_29th():
+    """
+    Watch out for the `T11` in the EXDATE corresponding to `T12` in the DTSTART.
+    """
+    rule = rrulestr(
+        """
+        DTSTART;TZID=Europe/Zurich:20250119T120000
+        RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR
+        EXDATE:20250127T110000Z
+        """,
+    )
+    tz = ZoneInfo("Europe/Zurich")
+    next_occurrence = rule.after(datetime(2025, 1, 26, 12, 0, 0, tzinfo=tz))
+    assert next_occurrence.date() == date(2025, 1, 29)
+    next_occurrence = rule.after(to_aware_datetime(date(2025, 1, 26)))
+    assert next_occurrence.date() == date(2025, 1, 29)
+
+
+def test_next_occurrence_date_should_be_January_29th():
+    rule = rrulestr(
+        """
+        DTSTART;VALUE=DATE:20250119
+        RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR
+        EXDATE;VALUE=DATE:20250127
+        """,
+    )
+    next_occurrence = rule.after(datetime(2025, 1, 26, 12, 0, 0))
+    assert next_occurrence.date() == date(2025, 1, 29)
+    next_occurrence = rule.after(to_naive_datetime(date(2025, 1, 26)))
+    assert next_occurrence.date() == date(2025, 1, 29)

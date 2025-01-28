@@ -12,9 +12,12 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
-def to_datetime(d: date) -> datetime:
-    tz = ZoneInfo(settings.TIME_ZONE)
-    return datetime(d.year, d.month, d.day, 12, 0, 0, tzinfo=tz)
+def to_aware_datetime(d: date) -> datetime:
+    return to_naive_datetime(d).replace(tzinfo=ZoneInfo(settings.TIME_ZONE))
+
+
+def to_naive_datetime(d: date) -> datetime:
+    return datetime(d.year, d.month, d.day, 12, 0, 0)
 
 
 def validate_monday(value):
@@ -107,7 +110,7 @@ class Attendance(BaseModel):
     def next_occurrence(self):
         try:
             r = rrulestr(self.rrule, cache=True)
-            next_occurrence = r.after(to_datetime(date.today()))
+            next_occurrence = r.after(to_naive_datetime(date.today()))
             return next_occurrence.date()
         except ValueError:
             return None
