@@ -107,6 +107,19 @@ class Attendance(BaseModel):
     child = models.ForeignKey("Child", on_delete=models.CASCADE)
     rrule = models.TextField()
 
+    @display(boolean=True, description=_("Is today coming?"))
+    def is_today_coming(self):
+        today = date.today()
+        # Any minute after midnight marks today as "lost", even with inc=True
+        today_midnight = datetime(today.year, today.month, today.day, 0, 0, 0)
+        try:
+            r = rrulestr(self.rrule, cache=True)
+            next_occurrence = r.after(today_midnight, inc=True)
+            return next_occurrence.date() == today
+        except ValueError:
+            return False
+
+    @display(description=_("Next occurrence"))
     def next_occurrence(self):
         try:
             r = rrulestr(self.rrule, cache=True)

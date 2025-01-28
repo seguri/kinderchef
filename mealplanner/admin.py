@@ -105,7 +105,7 @@ class ChildAdmin(BaseAdmin):
 
 @admin.register(Attendance)
 class AttendanceAdmin(BaseAdmin):
-    list_display = ("child", "next_occurrence")
+    list_display = ("child", "is_today_coming", "next_occurrence")
     list_display_links = ("child",)
 
 

@@ -124,3 +124,15 @@ def test_next_occurrence_date_should_be_January_29th():
     assert next_occurrence.date() == date(2025, 1, 29)
     next_occurrence = rule.after(to_naive_datetime(date(2025, 1, 26)))
     assert next_occurrence.date() == date(2025, 1, 29)
+
+
+def test_next_occurrence_date_inc_should_be_January_29th():
+    rule = rrulestr(
+        """
+        DTSTART;VALUE=DATE:20250119
+        RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR
+        EXDATE;VALUE=DATE:20250127
+        """,
+    )
+    next_occurrence = rule.after(datetime(2025, 1, 29, 0, 0, 0), inc=True)
+    assert next_occurrence.date() == date(2025, 1, 29)
