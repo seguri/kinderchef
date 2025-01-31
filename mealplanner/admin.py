@@ -107,6 +107,7 @@ class ChildAdmin(BaseAdmin):
 class AttendanceAdmin(BaseAdmin):
     list_display = ("child", "is_today_coming", "next_occurrence")
     list_display_links = ("child",)
+    ordering = ("child__first_name", "child__last_name")
 
 
 @admin.register(Meal)

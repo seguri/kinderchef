@@ -37,8 +37,8 @@ nginx-logs:
     ssh.exe -t root@{{server}} -- 'multitail /var/log/nginx/access.log /var/log/nginx/error.log'
 
 format:
-    {{python}} -m black .
     {{python}} -m isort .
+    {{python}} -m black .
 
 dev:
     {{python}} manage.py runserver
