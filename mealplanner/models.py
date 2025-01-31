@@ -134,6 +134,7 @@ class Attendance(BaseModel):
     class Meta:
         verbose_name = _("Attendance")
         verbose_name_plural = _("Attendances")
+        constraints = (models.UniqueConstraint(fields=["child"], name="unique_child"),)
 
 
 class Meal(BaseModel):
